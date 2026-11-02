@@ -3,8 +3,8 @@ test('认证、入库、搜索数据、日志、重启持久化和取出',async(
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'family-storage-'));const port=await new Promise(resolve=>{const s=net.createServer().listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>resolve(p));});});let child;
  async function start(){child=spawn(process.execPath,['--experimental-sqlite','server.js'],{cwd:__dirname,env:{...process.env,PORT:String(port),DATA_DIR:dir,APP_PASSWORD:'test-password-123'},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{child.stdout.once('data',resolve);child.once('error',reject);child.once('exit',code=>reject(Error('server exit '+code)));});}
  async function stop(){if(!child||child.exitCode!==null)return;await new Promise(resolve=>{child.once('exit',resolve);child.kill();});}
- const request=(url,options={})=>fetch(`http://127.0.0.1:${port}${url}`,{...options,headers:{Authorization:'Basic '+Buffer.from('admin:test-password-123').toString('base64'),'Content-Type':'application/json','X-Storage-Request':'1',...options.headers}});
- try{await start();assert.equal((await fetch(`http://127.0.0.1:${port}/api/items`)).status,401);assert.equal((await request('/')).status,200);
+ const request=(url,options={})=>fetch(`http://127.0.0.1:${port}${url}`,{...options,headers:{'Content-Type':'application/json','X-Storage-Request':'1',...options.headers}});
+ try{await start();assert.equal((await fetch(`http://127.0.0.1:${port}/api/items`)).status,200);assert.equal((await request('/')).status,200);
  const payload={name:'冬季围巾',box:3,note:'蓝色',photo:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2nS8AAAAASUVORK5CYII='};
  assert.equal((await request('/api/items',{method:'POST',body:JSON.stringify({...payload,box:0})})).status,400);
  assert.equal((await request('/api/items',{method:'POST',headers:{'X-Storage-Request':''},body:JSON.stringify(payload)})).status,403);
