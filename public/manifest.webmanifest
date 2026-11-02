@@ -1,0 +1,19 @@
+{
+  "name": "归物 · 家庭小仓库",
+  "short_name": "归物",
+  "description": "家庭物品和照片管理工具",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f5ef",
+  "theme_color": "#315b49",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

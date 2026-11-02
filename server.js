@@ -42,6 +42,8 @@ const server = http.createServer(async(req,res)=>{
   if(req.method==='GET'&& /^\/photos\/[a-f0-9-]+\.(jpeg|png|webp)$/.test(url.pathname)){
    const file=path.join(root,'photos',path.basename(url.pathname));if(!fs.existsSync(file))return send(res,404,{error:'照片不存在'});res.writeHead(200,{'Content-Type':'image/'+path.extname(file).slice(1),'Cache-Control':'private, max-age=3600'});return fs.createReadStream(file).pipe(res);
   }
+  if(req.method==='GET' && url.pathname==='/manifest.webmanifest'){res.writeHead(200,{'Content-Type':'application/manifest+json; charset=utf-8','Cache-Control':'no-cache'});return res.end(fs.readFileSync(path.join(__dirname,'public/manifest.webmanifest')));}
+  if(req.method==='GET' && url.pathname==='/icon.png'){res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'public, max-age=86400'});return fs.createReadStream(path.join(__dirname,'public/icon.png')).pipe(res);}
   if(req.method==='GET' && url.pathname==='/'){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'"});return res.end(fs.readFileSync(path.join(__dirname,'public/index.html')));}
   send(res,404,{error:'页面不存在'});
  }catch(e){console.error(e);if(!res.headersSent)send(res,400,{error:'操作失败，请检查输入或稍后重试'});}

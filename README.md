@@ -19,7 +19,10 @@
 3. 将 `.env.example` 复制为 `.env`，修改 `APP_PASSWORD` 为你自己的至少 8 位密码。不要保留示例密码。
 4. 在 Docker 的 Compose 项目功能中，从此文件夹创建项目，使用 `compose.yaml`。不同飞牛版本的菜单名称可能略有差别；如图形界面不能从目录构建，可通过 SSH 在该目录执行：
 
+## 更新
 ```sh
+cd /vol1/1000/family-storage
+git pull
 docker compose up -d --build
 ```
 
